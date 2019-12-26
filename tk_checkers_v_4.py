@@ -61,23 +61,26 @@ class Chess:
         for j in self.w_pawn:
 
             if (sum(j) % 2 == 0):
-                self.w.create_text(15 + 30 * j[0], 15 + 30 * j[1], text='♙', font="Times 20  ")
+                self.w.create_text(15 + 30 * j[0], 15 + 30 * j[1], text='⬤', font="Times 20  ",fill='Beige')
         for j in self.b_pawn:
 
             if (sum(j) % 2 == 0):
-                self.w.create_text(15 + 30 * j[0], 15 + 30 * j[1], text='♟', font="Times 20  ")
+                self.w.create_text(15 + 30 * j[0], 15 + 30 * j[1], text='⬤', font="Times 20  ",fill='dimgray')
 
     def b(self):
         self.w.bind("<Button-1>", self.click)
 
     def click(self, event):
         print('----------------------------------------------')
-        if 0 < event.x // 30 < 9 and 0 < event.y // 30 < 9 and (event.x // 30 + event.y // 30)%2==0:
-            if [event.x // 30, event.y // 30] in self.w_pawn and self.clc == False:
+
+        if 0 < event.x // 30 < 9 and 0 < event.y // 30 < 9 and (event.x // 30 + event.y // 30) % 2 == 0:
+            if self.x == event.x // 30 and self.y == event.y // 30:
+                self.clc = False
+            elif [event.x // 30, event.y // 30] in self.w_pawn and self.clc == False:
                 self.x = event.x // 30
                 self.y = event.y // 30
                 self.clc = True
-            if self.clc and [event.x // 30, event.y // 30] not in self.w_pawn :
+            if self.clc and [event.x // 30, event.y // 30] not in self.w_pawn:
 
                 if [event.x // 30, event.y // 30] not in self.b_pawn:
                     for i in self.w_pawn:
@@ -86,17 +89,21 @@ class Chess:
                     self.x, self.y = None, None
                     self.clc = False
 
-                elif [event.x // 30, event.y // 30]  in self.b_pawn\
-                    and [event.x//30-(self.x-event.x//30),event.y//30-(self.y-event.y//30)] not in self.b_pawn\
-                    and [event.x//30-(self.x-event.x//30),event.y//30-(self.y-event.y//30)] not in self.w_pawn\
-                        and 0<event.x//30-(self.x-event.x//30)<9 and 0<event.y//30-(self.y-event.y//30)<9:
-                    print([event.x//30-(self.x-event.x//30),event.y//30-(self.y-event.y//30)],'else')
+                elif [event.x // 30, event.y // 30] in self.b_pawn \
+                        and [event.x // 30 - (self.x - event.x // 30),
+                             event.y // 30 - (self.y - event.y // 30)] not in self.b_pawn \
+                        and [event.x // 30 - (self.x - event.x // 30),
+                             event.y // 30 - (self.y - event.y // 30)] not in self.w_pawn \
+                        and 0 < event.x // 30 - (self.x - event.x // 30) < 9 and 0 < event.y // 30 - (
+                        self.y - event.y // 30) < 9:
+                    print([event.x // 30 - (self.x - event.x // 30), event.y // 30 - (self.y - event.y // 30)], 'else')
                     for i in self.w_pawn:
                         if i == [self.x, self.y]:
-                            i[0], i[1] = event.x//30-(self.x-event.x//30),event.y//30-(self.y-event.y//30)
-                    t=0
+                            i[0], i[1] = event.x // 30 - (self.x - event.x // 30), event.y // 30 - (
+                                        self.y - event.y // 30)
+                    t = 0
                     while t < 12:
-                        if self.b_pawn[t][0] == event.x//30 and self.b_pawn[t][1] == event.y//30:
+                        if self.b_pawn[t][0] == event.x // 30 and self.b_pawn[t][1] == event.y // 30:
                             print(self.b_pawn[t])
                             del self.b_pawn[t]
                             break
@@ -104,41 +111,36 @@ class Chess:
 
                     self.x, self.y = None, None
                     self.clc = False
-                self.pc()
+                if self.clc == False:
+                    self.pc()
                 self.createboard()
                 self.figures()
 
-        #print(self.w_pawn)
-        #print(self.b_pawn)
-
-
     def pc(self):
         for i in range(len(self.b_pawn)):
-            x=self.b_pawn[i][0]
-            y=self.b_pawn[i][1]
-            y-=1
-            x-=randrange(-1,2,2)
+            x = self.b_pawn[i][0]
+            y = self.b_pawn[i][1]
+            y -= 1
+            x -= randrange(-1, 2, 2)
             nx, ny = x - (self.b_pawn[i][0] - x), y - (self.b_pawn[i][1] - y)
-            if 0 < x  < 9 and 0 < y < 9 and (x +y) % 2 == 0 :
-                if [x,y]not in self.w_pawn and [x,y]not in self.b_pawn:
-                    self.b_pawn[i][0]=x
-                    self.b_pawn[i][1]=y
+            if 0 < x < 9 and 0 < y < 9 and (x + y) % 2 == 0:
+                if [x, y] not in self.w_pawn and [x, y] not in self.b_pawn:
+                    self.b_pawn[i][0] = x
+                    self.b_pawn[i][1] = y
                     break
-                if [x,y] in self.w_pawn and [nx,ny] not in self.w_pawn and [nx,ny]not in self.b_pawn and 0<nx<9 and 0<ny<9:
+                if [x, y] in self.w_pawn and [nx, ny] not in self.w_pawn and [nx,
+                                                                              ny] not in self.b_pawn and 0 < nx < 9 and 0 < ny < 9:
                     self.b_pawn[i][0] = nx
                     self.b_pawn[i][1] = ny
-                    t=0
-                    while t<12:
-                        if self.w_pawn[t][0]==x and self.w_pawn[t][1]==y:
+                    t = 0
+                    while t < 12:
+                        if self.w_pawn[t][0] == x and self.w_pawn[t][1] == y:
                             del self.w_pawn[t]
                             break
-                        t+=1
-
+                        t += 1
                     break
 
-        self.b_pawn.sort(key=lambda x:x[1])
-
-
+        self.b_pawn.sort(key=lambda x: x[1])
 
 
 Chess()
